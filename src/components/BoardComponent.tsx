@@ -3,6 +3,7 @@ import {Board} from "../models/Board";
 import CellComponent from "./CellComponent";
 import {Cell} from "../models/Cell";
 import {Player} from "../models/Player";
+import {King} from "../models/figures/King";
 
 interface BoardProps {
     board: Board;
@@ -16,7 +17,12 @@ const BoardComponent: FC<BoardProps> = ({board, setBoard, currentPlayer, swapPla
     
     function click(cell: Cell) {
         if (selectedCell && selectedCell !== cell && selectedCell.figure?.canMove(cell)) {
-            selectedCell.moveFigure(cell);
+            if (selectedCell.figure instanceof King && board.checkShortCastle(selectedCell.figure, cell))
+                board.doShortCastle(selectedCell.figure);
+            else if (selectedCell.figure instanceof King && board.checkLongCastle(selectedCell.figure, cell))
+                board.doLongCastle(selectedCell.figure);
+            else
+                selectedCell.moveFigure(cell);
             swapPlayer();
             setSelectedCell(null);
             updateBoard();

@@ -6,7 +6,7 @@ import {King} from "./figures/King";
 import {Bishop} from "./figures/Bishop";
 import {Knight} from "./figures/Knight";
 import {Rook} from "./figures/Rook";
-import {Figure} from "./figures/Figure";
+import {Figure, FigureNames} from "./figures/Figure";
 
 export class Board {
     cells: Cell[][] = [];
@@ -48,6 +48,55 @@ export class Board {
 
     public getCell(x: number, y: number) {
         return this.cells[y][x]
+    }
+
+    public isCellEmpty(x: number, y: number) {
+        return this.cells[y][x].isEmpty();
+    }
+
+    public doesCellHasFigure(x: number, y: number, figureName: FigureNames) {
+        return this.cells[y][x].figure?.name === figureName;
+    }
+
+    public checkShortCastle(king: King, target: Cell): boolean {
+        if (!king.hadAlreadyMoved
+            && target.x === 6
+            && this.isCellEmpty(5, king.cell.y)
+            && this.isCellEmpty(6, king.cell.y)
+            && this.doesCellHasFigure(7, king.cell.y, FigureNames.ROOK)
+        ) {
+            return true;
+        }
+        return  false;
+    }
+
+    public checkLongCastle(king: King, target: Cell): boolean {
+        if (!king.hadAlreadyMoved
+            && target.x === 2
+            && this.isCellEmpty(1, king.cell.y)
+            && this.isCellEmpty(2, king.cell.y)
+            && this.isCellEmpty(3, king.cell.y)
+            && this.doesCellHasFigure(0, king.cell.y, FigureNames.ROOK)
+        ) {
+            return true;
+        }
+        return  false;
+    }
+
+    public doShortCastle(king: King) {
+        let rook = this.cells[king.cell.y][7].figure;
+        if (rook === null)
+            return;
+        this.cells[rook.cell.y][rook.cell.x].moveFigure(this.cells[rook.cell.y][5]);
+        this.cells[king.cell.y][king.cell.x].moveFigure(this.cells[king.cell.y][6]);
+    }
+
+    public doLongCastle(king: King) {
+        let rook = this.cells[king.cell.y][0].figure;
+        if (rook === null)
+            return;
+        this.cells[rook.cell.y][rook.cell.x].moveFigure(this.cells[rook.cell.y][3]);
+        this.cells[king.cell.y][king.cell.x].moveFigure(this.cells[king.cell.y][2]);
     }
 
     private addPawns() {
