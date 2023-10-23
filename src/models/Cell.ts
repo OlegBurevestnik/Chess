@@ -33,7 +33,7 @@ export class Cell {
     }
 
     isEmptyVertical(target: Cell): boolean {
-        if(this.x !== target.x) {
+        if (this.x !== target.x) {
             return false;
         }
 
@@ -47,10 +47,8 @@ export class Cell {
         return true;
     }
 
-
-
     isEmptyHorizontal(target: Cell): boolean {
-        if(this.y !== target.y) {
+        if (this.y !== target.y) {
             return false;
         }
 
@@ -92,7 +90,7 @@ export class Cell {
     }
 
     moveFigure(target: Cell) {
-        if(this.figure && this.figure.canMove(target)) {
+        if (this.figure && this.figure.canMove(target)) {
             this.figure.moveFigure(target);
             if (target.figure) {
                 this.addLostFigure(target.figure);
